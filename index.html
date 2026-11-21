@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#421454" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>ChronoPlum — Personal Time Tracker & Smart Session Timer</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" href="./assets/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="./assets/icons/icon-192.png" />
+  <!-- Official Fontshare Typography: Supreme, Author, Tanker, Nippo (non-italic weights only) -->
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=supreme@400,500,600,700&f[]=author@500,600,700&f[]=tanker@400&f[]=nippo@500,700&display=swap" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <!-- Sticky App Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFD749" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" stroke="#FF5B42"></circle>
+          <path d="M12 7v5l3.5 2.5"></path>
+        </svg>
+      </div>
+      <span class="brand-name">ChronoPlum</span>
+    </div>
+    <div class="header-actions">
+      <button id="headerModeToggle" class="mode-pill" type="button" title="Switch between Manual and Automatic Sequence mode">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M17 2l4 4-4 4"></path>
+          <path d="M3 11v-1a4 4 0 0 1 4-4h14"></path>
+          <path d="M7 22l-4-4 4-4"></path>
+          <path d="M21 13v1a4 4 0 0 1-4 4H3"></path>
+        </svg>
+        <span id="headerModeText">Manual Mode</span>
+      </button>
+      <button id="installPwaBtn" class="mode-pill" type="button" style="display:none;background:#FF5B42;color:#FFFFFF;">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Install</span>
+      </button>
+      <button id="themeToggleBtn" class="icon-btn" type="button" aria-label="Toggle Light or Dark Theme">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Desktop Navigation (>= 768px) -->
+  <nav class="desktop-nav" aria-label="Main Navigation">
+    <button class="nav-tab active" data-view="dashboard" type="button">
+      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="nav-tab" data-view="timers" type="button">
+      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="14" x2="15" y2="11"></line><circle cx="12" cy="14" r="8"></circle></svg>
+      <span>Timers</span>
+    </button>
+    <button class="nav-tab" data-view="workflows" type="button">
+      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+      <span>Workflows</span>
+    </button>
+    <button class="nav-tab" data-view="analytics" type="button">
+      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      <span>Daily Analytics</span>
+    </button>
+    <button class="nav-tab" data-view="history" type="button">
+      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+      <span>History</span>
+    </button>
+    <button class="nav-tab" data-view="sleep" type="button">
+      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      <span>Sleep Log</span>
+    </button>
+    <button class="nav-tab" data-view="settings" type="button">
+      <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <span>Settings</span>
+    </button>
+  </nav>
+
+  <!-- Main Workspace -->
+  <main class="app-main">
+    <!-- ================= VIEW 1: DASHBOARD ================= -->
+    <section id="view-dashboard" class="view-panel active" aria-label="Dashboard">
+      <!-- Independent Master Timer Strip -->
+      <div class="master-strip" aria-label="Master Daily Timer">
+        <div class="master-top">
+          <div>
+            <div class="master-label-group">
+              <span id="masterDot" class="status-dot"></span>
+              <span class="master-title">Master Timer · Daily Timeline</span>
+            </div>
+            <div id="masterDateLabel" class="master-date">Today</div>
+          </div>
+          <button id="masterStartBtn" class="btn btn-highlight btn-sm" type="button">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+            <span>Start Master Day</span>
+          </button>
+        </div>
+
+        <div class="master-metrics">
+          <div class="master-metric">
+            <div class="master-metric-label">Elapsed Tracked</div>
+            <div id="masterElapsedVal" class="master-metric-value mono">00:00:00</div>
+          </div>
+          <div class="master-metric">
+            <div class="master-metric-label">Unallocated Time</div>
+            <div id="masterWastedVal" class="master-metric-value mono coral">00:00:00</div>
+          </div>
+          <div class="master-metric">
+            <div class="master-metric-label">Day Remaining</div>
+            <div id="masterRemainingVal" class="master-metric-value mono gold">00:00:00</div>
+          </div>
+        </div>
+
+        <div class="master-progress-track" title="Current calendar day elapsed">
+          <div id="masterProgressFill" class="master-progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Active Session Countdown Hero -->
+      <div class="session-hero" aria-label="Active Session Timer">
+        <div class="session-hero-header">
+          <div class="session-badge">
+            <span id="activeSessionDot" class="color-swatch" style="background:#FF5B42;"></span>
+            <span id="activeSessionTitle">No Active Session</span>
+          </div>
+          <span id="activeSessionModeTag" class="tag">Idle</span>
+        </div>
+
+        <div class="session-ring-wrap">
+          <svg class="session-ring-svg" viewBox="0 0 210 210" aria-hidden="true">
+            <circle class="ring-track" cx="105" cy="105" r="92"></circle>
+            <circle id="sessionRingProgress" class="ring-progress" cx="105" cy="105" r="92"
+              stroke-dasharray="578.05" stroke-dashoffset="578.05"></circle>
+          </svg>
+          <div class="session-ring-center">
+            <div id="sessionCountdown" class="session-time-main mono">00:00</div>
+            <div id="sessionElapsedInfo" class="session-time-sub">Select a timer label below</div>
+          </div>
+        </div>
+
+        <div class="session-controls">
+          <button id="btnPauseResume" class="btn btn-accent" type="button" disabled>Pause</button>
+          <button id="btnFinishEarly" class="btn btn-primary" type="button" disabled>Finish</button>
+          <button id="btnResetSession" class="btn btn-outline" type="button" disabled>Reset</button>
+          <button id="btnStopSession" class="btn btn-danger" type="button" disabled>Stop</button>
+        </div>
+
+        <div class="session-adjust-row">
+          <button id="btnSub5" class="btn btn-outline btn-sm" type="button" disabled>-5 min</button>
+          <button id="btnSub1" class="btn btn-outline btn-sm" type="button" disabled>-1 min</button>
+          <button id="btnAdd1" class="btn btn-outline btn-sm" type="button" disabled>+1 min</button>
+          <button id="btnAdd5" class="btn btn-outline btn-sm" type="button" disabled>+5 min</button>
+          <button id="btnEditActiveDur" class="btn btn-outline btn-sm" type="button" disabled>Edit Duration</button>
+        </div>
+
+        <!-- Active Workflow Quick Bar -->
+        <div id="activeWorkflowBar" class="item-row" style="display:none; margin-top:16px;">
+          <div>
+            <div id="activeWfTitle" class="item-title">Workflow</div>
+            <div id="activeWfStepInfo" class="item-sub">Step 1 of 4</div>
+          </div>
+          <div class="item-actions">
+            <button id="btnWfRepeatStep" class="btn btn-outline btn-sm" type="button">Repeat Step</button>
+            <button id="btnWfSkipStep" class="btn btn-primary btn-sm" type="button">Next Step</button>
+            <button id="btnWfStopAll" class="btn btn-danger btn-sm" type="button">Stop Sequence</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick-Start Labels -->
+      <div class="section-head">
+        <h2 class="section-title">Quick-Start Timers</h2>
+        <button id="btnDashAddLabel" class="btn btn-outline btn-sm" type="button">
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>New Label</span>
+        </button>
+      </div>
+      <div id="dashQuickLabels" class="quick-grid"></div>
+
+      <!-- Today's Snapshot -->
+      <div class="section-head">
+        <h2 class="section-title">Today's Allocation</h2>
+        <button id="btnJumpAnalytics" class="btn btn-outline btn-sm" type="button">
+          <span>Full Analytics</span>
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </div>
+      <div id="dashTodayKpis" class="kpi-grid"></div>
+    </section>
+
+    <!-- ================= VIEW 2: TIMERS (LABEL MANAGER) ================= -->
+    <section id="view-timers" class="view-panel" aria-label="Timer Labels">
+      <div class="section-head">
+        <h2 class="section-title">Custom Timer Labels</h2>
+        <button id="btnOpenNewLabelModal" class="btn btn-accent btn-sm" type="button">
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Add Label</span>
+        </button>
+      </div>
+      <div class="panel">
+        <p class="item-sub" style="margin:0 0 12px;">
+          Create, rename, edit durations, archive, or delete any activity label. Start any timer independently at any time.
+        </p>
+        <div id="timersActiveList" class="item-list"></div>
+      </div>
+
+      <div class="section-head">
+        <h2 class="section-title">Archived Labels</h2>
+      </div>
+      <div class="panel">
+        <div id="timersArchivedList" class="item-list"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 3: WORKFLOWS ================= -->
+    <section id="view-workflows" class="view-panel" aria-label="Automatic Workflows">
+      <div class="section-head">
+        <h2 class="section-title">Automatic Sequence Workflows</h2>
+        <button id="btnCreateWorkflow" class="btn btn-accent btn-sm" type="button">
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>New Sequence</span>
+        </button>
+      </div>
+
+      <div class="panel">
+        <div class="toggle-row">
+          <div>
+            <div class="item-title">Operating Mode</div>
+            <div class="item-sub">Manual Mode never starts another timer automatically. Automatic Mode runs your sequence.</div>
+          </div>
+          <button id="wfModeSwitch" class="btn btn-primary btn-sm" type="button">Switch Mode</button>
+        </div>
+        <div class="form-grid two-col" style="margin-top:12px;">
+          <div class="field">
+            <label for="wfSelector">Selected Workflow</label>
+            <select id="wfSelector"></select>
+          </div>
+          <div class="field">
+            <label for="wfNameInput">Workflow Name</label>
+            <input id="wfNameInput" type="text" placeholder="Deep Research Block" />
+          </div>
+        </div>
+        <div class="toggle-row" style="margin-top:8px;">
+          <div>
+            <div class="item-title">Automatic Step Transition</div>
+            <div class="item-sub">Automatically start the next step when the current timer reaches zero.</div>
+          </div>
+          <button id="wfAutoTransToggle" class="switch on" type="button" role="switch" aria-checked="true" aria-label="Toggle automatic step transition"></button>
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="item-title">Repeat Sequence</div>
+            <div class="item-sub">Loop back to Step 1 after the final step completes.</div>
+          </div>
+          <button id="wfRepeatToggle" class="switch" type="button" role="switch" aria-checked="false" aria-label="Toggle repeat sequence"></button>
+        </div>
+        <div class="item-actions" style="margin-top:14px;">
+          <button id="btnStartSelectedWf" class="btn btn-accent" type="button">Start Sequence</button>
+          <button id="btnSaveWfMeta" class="btn btn-outline" type="button">Save Changes</button>
+          <button id="btnDeleteWf" class="btn btn-danger btn-sm" type="button">Delete Sequence</button>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2 class="section-title">Sequence Steps (Per-Occurrence Durations)</h2>
+        <button id="btnAddWfStep" class="btn btn-primary btn-sm" type="button">
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Add Step</span>
+        </button>
+      </div>
+      <div class="panel">
+        <p class="item-sub" style="margin:0 0 12px;">
+          Edit any step's duration independently—even while an earlier step is running. Changes to upcoming steps never alter the active timer.
+        </p>
+        <div id="wfStepsList" class="item-list"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 4: DAILY ANALYTICS ================= -->
+    <section id="view-analytics" class="view-panel" aria-label="Daily Analytics">
+      <div class="section-head">
+        <h2 class="section-title">Daily Analytics</h2>
+        <input id="analyticsDatePicker" type="date" aria-label="Select analytics date" style="min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface);" />
+      </div>
+
+      <div id="analyticsKpiGrid" class="kpi-grid" style="margin-bottom:16px;"></div>
+
+      <div class="panel">
+        <div class="item-title">Daily Time Distribution (Non-Overlapping)</div>
+        <div class="item-sub">Break and Other labeled time count as allocated—only unallocated time is wasted.</div>
+        <div id="analyticsDistBar" class="stacked-bar"></div>
+        <div id="analyticsDistLegend" class="legend-row"></div>
+      </div>
+
+      <div class="panel">
+        <div class="item-title">24-Hour Activity Timeline</div>
+        <div id="analyticsTimeline" class="timeline-track"></div>
+        <div class="timeline-axis mono">
+          <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-head" style="margin:0 0 12px;">
+          <div class="item-title">Unallocated Gaps — Manual Correction</div>
+          <button id="btnManualLogModal" class="btn btn-outline btn-sm" type="button">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Manual Interval</span>
+          </button>
+        </div>
+        <div id="analyticsGapsList" class="item-list"></div>
+      </div>
+
+      <div class="panel">
+        <div class="item-title" style="margin-bottom:12px;">Recorded Sessions Log</div>
+        <div id="analyticsSessionLog" class="item-list"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 5: HISTORY ================= -->
+    <section id="view-history" class="view-panel" aria-label="History and Weekly Summary">
+      <div class="section-head">
+        <h2 class="section-title">7-Day Weekly Summary</h2>
+      </div>
+      <div id="historyWeeklyKpis" class="kpi-grid" style="margin-bottom:16px;"></div>
+
+      <div class="panel">
+        <div class="item-title" style="margin-bottom:12px;">Daily Breakdown (Last 7 Days)</div>
+        <div id="historyDaysList" class="item-list"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 6: SLEEP ================= -->
+    <section id="view-sleep" class="view-panel" aria-label="Optional Daily Sleep Entry">
+      <div class="section-head">
+        <h2 class="section-title">Optional Sleep Data Entry</h2>
+      </div>
+      <div class="panel">
+        <p class="item-sub" style="margin:0 0 14px;">
+          Sleep is optional and never inferred from app inactivity. Cross-midnight sleep is split cleanly without duplication.
+        </p>
+        <form id="sleepForm" class="form-grid two-col">
+          <div class="field">
+            <label for="sleepDateInput">Primary Date</label>
+            <input id="sleepDateInput" type="date" required />
+          </div>
+          <div class="field">
+            <label for="sleepStartInput">Sleep Start Time</label>
+            <input id="sleepStartInput" type="time" value="23:30" required />
+          </div>
+          <div class="field">
+            <label for="sleepWakeInput">Wake-Up Time</label>
+            <input id="sleepWakeInput" type="time" value="07:00" required />
+          </div>
+          <div class="field">
+            <label for="sleepNotesInput">Optional Notes</label>
+            <input id="sleepNotesInput" type="text" placeholder="Restful sleep" />
+          </div>
+          <div style="grid-column: 1 / -1; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+            <span id="sleepComputedPreview" class="item-sub mono">Duration: 7h 30m</span>
+            <button class="btn btn-primary" type="submit">Save Sleep Record</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <div class="toggle-row" style="padding-top:0;">
+          <div>
+            <div class="item-title">Include Sleep in Custom Analytics</div>
+            <div class="item-sub">Keep off to separate sleep from timer-based activity tracking.</div>
+          </div>
+          <button id="toggleIncludeSleep" class="switch" type="button" role="switch" aria-checked="false" aria-label="Toggle include sleep in analytics"></button>
+        </div>
+        <div class="item-title" style="margin:14px 0 10px;">Saved Sleep History</div>
+        <div id="sleepHistoryList" class="item-list"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 7: SETTINGS ================= -->
+    <section id="view-settings" class="view-panel" aria-label="Settings and Backup">
+      <div class="section-head">
+        <h2 class="section-title">Alarm, Notifications & Preferences</h2>
+      </div>
+      <div class="panel">
+        <div class="form-grid two-col">
+          <div class="field">
+            <label for="alarmToneSelect">Alarm Tone</label>
+            <select id="alarmToneSelect">
+              <option value="chime-urgent">Urgent Tri-Tone Chime (Loud)</option>
+              <option value="bell-pulse">Clear Bell Pulse</option>
+              <option value="siren-soft">Dual-Pitch Alert</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="alarmVolumeRange">Alarm Volume (<span id="alarmVolLabel">90%</span>)</label>
+            <input id="alarmVolumeRange" type="range" min="0.1" max="1" step="0.05" value="0.9" />
+          </div>
+        </div>
+        <div class="item-actions" style="margin-top:14px;">
+          <button id="btnTestAlarm" class="btn btn-accent btn-sm" type="button">Test Alarm Sound</button>
+          <button id="btnReqNotif" class="btn btn-outline btn-sm" type="button">Enable Notifications</button>
+          <span id="notifPermBadge" class="tag">Checking...</span>
+        </div>
+
+        <div class="toggle-row" style="margin-top:14px;">
+          <div>
+            <div class="item-title">Screen Wake Lock (When Supported)</div>
+            <div class="item-sub">Prevents screen sleep while an active timer is visible in foreground.</div>
+          </div>
+          <button id="toggleWakeLock" class="switch on" type="button" role="switch" aria-checked="true" aria-label="Toggle screen wake lock"></button>
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <div class="item-title">Dark Plum Theme</div>
+            <div class="item-sub">Switch between crisp Light and Deep Plum Dark surfaces.</div>
+          </div>
+          <button id="toggleDarkTheme" class="switch" type="button" role="switch" aria-checked="false" aria-label="Toggle dark plum theme"></button>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2 class="section-title">Data Persistence & Backup</h2>
+      </div>
+      <div class="panel">
+        <p class="item-sub" style="margin:0 0 12px;">
+          All timers, workflows, history, and sleep logs are stored locally in IndexedDB. Export JSON backups anytime.
+        </p>
+        <div class="item-actions">
+          <button id="btnExportJson" class="btn btn-primary btn-sm" type="button">Export JSON Backup</button>
+          <label class="btn btn-outline btn-sm" style="margin:0;">
+            Import JSON
+            <input id="importJsonInput" type="file" accept="application/json" style="display:none;" />
+          </label>
+          <button id="btnClearHistory" class="btn btn-danger btn-sm" type="button">Clear History</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="item-title">Android PWA Background Execution Notes</div>
+        <p class="item-sub" style="margin:8px 0 0;">
+          All timers use wall-clock timestamps, so elapsed time and midnight rollovers remain 100% accurate across screen lock, app switching, or browser closure. However, Android Chrome suspends background tabs and Service Workers when the screen is locked, so loud audio playback cannot be guaranteed while the OS sleeps; the app immediately reconciles missed completions and alerts on wake.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Mobile Bottom Navigation (5 Clear, Spacious Touch Targets — 320px Safe) -->
+  <nav class="bottom-nav" aria-label="Mobile Navigation">
+    <button class="nav-tab active" data-view="dashboard" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-tab" data-view="timers" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="10" y1="2" x2="14" y2="2"></line><line x1="12" y1="14" x2="15" y2="11"></line><circle cx="12" cy="14" r="8"></circle></svg>
+      <span>Timers</span>
+    </button>
+    <button class="nav-tab" data-view="workflows" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+      <span>Cycles</span>
+    </button>
+    <button class="nav-tab" data-view="analytics" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      <span>Daily</span>
+    </button>
+    <button id="mobileMenuBtn" class="nav-tab" type="button" aria-haspopup="dialog" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      <span>Menu</span>
+    </button>
+  </nav>
+
+  <!-- Mobile Secondary Navigation Bottom Sheet (History, Sleep Log, Settings) -->
+  <div id="mobileMenuSheet" class="sheet-backdrop" role="dialog" aria-modal="true" aria-labelledby="mobileMenuTitle">
+    <div class="sheet-card">
+      <div class="section-head" style="margin:0;">
+        <h3 id="mobileMenuTitle" class="section-title">More Sections</h3>
+        <button id="closeMobileMenuBtn" class="btn btn-outline btn-sm" type="button">Close</button>
+      </div>
+      <div class="sheet-list">
+        <button class="sheet-item" data-sheet-view="history" type="button">
+          <span class="sheet-item-left">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span>History & Weekly Summary</span>
+          </span>
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <button class="sheet-item" data-sheet-view="sleep" type="button">
+          <span class="sheet-item-left">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span>Optional Sleep Log</span>
+          </span>
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <button class="sheet-item" data-sheet-view="settings" type="button">
+          <span class="sheet-item-left">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <span>Settings & JSON Backup</span>
+          </span>
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODALS ================= -->
+  <!-- Label Editor Modal -->
+  <div id="labelModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="labelModalTitle">
+    <div class="modal-card">
+      <div class="section-head" style="margin-top:0;">
+        <h3 id="labelModalTitle" class="section-title">Add Timer Label</h3>
+        <button id="closeLabelModal" class="btn btn-outline btn-sm" type="button">Close</button>
+      </div>
+      <form id="labelForm" class="form-grid">
+        <input id="lblIdInput" type="hidden" />
+        <div class="field">
+          <label for="lblNameInput">Label Name</label>
+          <input id="lblNameInput" type="text" required placeholder="Research, Coding, or Reading" />
+        </div>
+        <div class="form-grid two-col">
+          <div class="field">
+            <label for="lblDurInput">Default Duration (minutes)</label>
+            <input id="lblDurInput" type="number" min="1" max="600" value="50" required />
+          </div>
+          <div class="field">
+            <label for="lblCatSelect">Category</label>
+            <select id="lblCatSelect">
+              <option value="study">Study / Reading</option>
+              <option value="break">Break</option>
+              <option value="other">Other Labeled Activity</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid two-col">
+          <div class="field">
+            <label for="lblColorSelect">Accent Color</label>
+            <select id="lblColorSelect">
+              <option value="#421454">Deep Purple (#421454)</option>
+              <option value="#802C62">Muted Magenta (#802C62)</option>
+              <option value="#FF5B42">Coral Accent (#FF5B42)</option>
+              <option value="#FFD749">Golden Yellow (#FFD749)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="lblAutoSeqCheck">Auto-Sequence Eligible</label>
+            <select id="lblAutoSeqCheck">
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="lblDescInput">Optional Description</label>
+          <input id="lblDescInput" type="text" placeholder="Short description of this activity" />
+        </div>
+        <button class="btn btn-accent" type="submit">Save Label</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Session Completion & Alarm Modal -->
+  <div id="alarmModal" class="modal-backdrop" role="alertdialog" aria-modal="true" aria-labelledby="alarmModalTitle">
+    <div class="modal-card alarm-card">
+      <div class="alarm-pulse-icon" aria-hidden="true">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+      </div>
+      <h3 id="alarmModalTitle" class="section-title" style="font-size:1.25rem;">Session Completed</h3>
+      <p id="alarmModalBody" class="item-sub" style="margin:8px 0 14px;"></p>
+      <div id="alarmAutoNextNote" class="tag" style="margin-bottom:16px;">Manual Mode — waiting for your choice</div>
+      <div class="session-controls">
+        <button id="btnAlarmStop" class="btn btn-accent" type="button">Stop Alarm</button>
+        <button id="btnAlarmRepeat" class="btn btn-primary" type="button">Repeat Session</button>
+        <button id="btnAlarmSnooze" class="btn btn-highlight" type="button">Snooze 5 min</button>
+        <button id="btnAlarmDismiss" class="btn btn-outline" type="button">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Gap Correction / Interval Modal -->
+  <div id="correctionModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="corrModalTitle">
+    <div class="modal-card">
+      <div class="section-head" style="margin-top:0;">
+        <h3 id="corrModalTitle" class="section-title">Assign Interval to Label</h3>
+        <button id="closeCorrModal" class="btn btn-outline btn-sm" type="button">Close</button>
+      </div>
+      <form id="correctionForm" class="form-grid">
+        <input id="corrDateInput" type="hidden" />
+        <div class="field">
+          <label for="corrLabelSelect">Activity Label</label>
+          <select id="corrLabelSelect" required></select>
+        </div>
+        <div class="form-grid two-col">
+          <div class="field">
+            <label for="corrStartInput">Start Time</label>
+            <input id="corrStartInput" type="time" required />
+          </div>
+          <div class="field">
+            <label for="corrEndInput">End Time</label>
+            <input id="corrEndInput" type="time" required />
+          </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Save Allocation</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Generic Confirmation / Prompt Modal -->
+  <div id="dialogModal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h3 id="dialogTitle" class="section-title" style="margin-bottom:8px;">Confirm</h3>
+      <p id="dialogMessage" class="item-sub" style="margin:0 0 14px;"></p>
+      <div id="dialogInputWrap" class="field" style="display:none;margin-bottom:14px;">
+        <input id="dialogNumberInput" type="number" min="1" max="600" aria-label="Duration in minutes" />
+      </div>
+      <div class="item-actions" style="justify-content:flex-end;">
+        <button id="dialogCancelBtn" class="btn btn-outline btn-sm" type="button">Cancel</button>
+        <button id="dialogConfirmBtn" class="btn btn-accent btn-sm" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Scripts (Order preserves dependencies cleanly) -->
+  <script src="./js/utils.js"></script>
+  <script src="./js/storage.js"></script>
+  <script src="./js/analytics.js"></script>
+  <script src="./js/master-timer.js"></script>
+  <script src="./js/workflow-engine.js"></script>
+  <script src="./js/timer-engine.js"></script>
+  <script src="./js/notifications.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
